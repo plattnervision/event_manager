@@ -24,10 +24,12 @@ end
 
 def all_the_hours(number)
   real_date = DateTime.strptime(number.gsub(" ",""), '%m/%d/%y%H:%M')
+  @raw_hours.push(real_date)
 end
 
 def hours_to_hash(number)
   top_signups[something] = raw_hours.count(something)
+  best_hours
 end
 
 def best_hours(hash,hash2)
@@ -52,7 +54,7 @@ contents = CSV.open 'event_attendees.csv', headers: true, header_converters: :sy
 
 template_letter = File.read "form_letter.erb"
 erb_template = ERB.new template_letter
-
+@raw_hours = []
 contents.each do |row|
   id = row[0]
   name = row[:first_name]
