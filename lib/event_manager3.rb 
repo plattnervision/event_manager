@@ -1,0 +1,24 @@
+require "csv"
+
+puts "EventManager initialized"
+
+contents = CSV.open "event_attendees.csv", headers: true, header_converters: :symbol
+contents.each do |row|
+  name = row[:first_name]
+  zipcode = row[:zipcode]
+  if zipcode.nil?
+    zipcode = "00000"
+  elsif zipcode.length < 5
+    zipcode = zipcode.rjust 5, "0" # if less than 5, set it equal to 5 and add zeros
+  elsif zipcode.length > 5 # if greater than five, zipcode is equal to index 0,1,2,3,4 (5 total) of the zipcode
+    zipcode = zipcode[0..4]
+  end
+
+  # if zip code is exactly five digits, its good
+  #   if zip code is more than five digits, truncate that ish
+  #     if zip code is less than 5 digits, add zeros until five
+  puts "#{name} #{zipcode}"
+end
+
+# the csv class does not assign default values for blank fields
+# these are nil values and can not take the .length method
