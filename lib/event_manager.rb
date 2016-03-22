@@ -20,11 +20,25 @@ def save_thank_you_letters(id,form_letter)
   File.open(filename,'w') do |file|
     file.puts form_letter
   end
+  cool_graphic = rand(2)
+  if cool_graphic == 1
+    loading_graphic
+  else
+    puts "^_^"
+    puts "^_^"
+    puts "^_^"
+    puts "^_^"
+    puts "^_^"
+  end
 end
 
 def clean_hours(date) #returns hours in a workable format
   real_date = DateTime.strptime(date.gsub(" ",""), '%m/%d/%y%H:%M')
   real_date.hour
+end
+def clean_days(date)
+  real_date = DateTime.strptime(date.gsub(" ",""), '%m/%d/%y%H:%M')
+  real_date.day
 end
 
 def best_hour_2_advertise(hours)
@@ -43,6 +57,29 @@ def best_hour_2_advertise(hours)
     time_o_day = DateTime.strptime(key.to_s, '%H')
     puts time_o_day.strftime("Advertise @ %I:%M%P")
   end
+end
+def best_day_2_advertise(date)
+  top_signups = Hash.new
+  signup_days = date.uniq
+  signup_days.each do |something|
+    top_signups[something] = date.count(something)
+  end
+  signup_max = top_signups.values.max
+
+  popular_days = top_signups.select{|k,v| v == signup_max}
+  popular_days.each_key do |key|
+    best_day = DateTime.strptime(key.to_s, '%d')
+    puts best_day.strftime("the most popular day to advertise is %A")
+  end
+end
+def loading_graphic
+  puts "^ V_V ^"
+  puts "  ^ V_V ^"
+  puts "    ^ V_V ^"
+  puts "      ^ V_V ^"
+  puts "    ^ V_V ^"
+  puts "  ^ V_V ^"
+  puts "^ V_V ^"
 end
 
 
@@ -65,20 +102,15 @@ end
 
 puts "call to action finished"
 
-puts "^ V_V ^"
-puts "^ V_V ^"
-puts "^ V_V ^"
-puts "^ V_V ^"
-puts "^ V_V ^"
-puts "^ V_V ^"
-
 puts "spiffy data analyzer begins to spin *beep**beep*"
 
 contents = CSV.open 'event_attendees.csv', headers: true, header_converters: :symbol
-
+raw_days = []
 raw_hours = []
 contents.each do |row|
   date = row[:regdate]
   raw_hours.push(clean_hours(date))
+  raw_days.push(clean_days(date))
 end
 best_hour_2_advertise(raw_hours)
+best_day_2_advertise(raw_days)
